@@ -19,7 +19,7 @@ class stock():
     
     project_path = r'/home/azureuser/projects/stock-tracker'
     
-    def __init__(self,ticker,region):
+    def __init__(self,ticker,region="US"):
         self.ticker = ticker
         self.region = region
 
