@@ -1,6 +1,3 @@
 stock-tracker/data/**
-<<<<<<< HEAD
-stock-tracker/credentials.ini
-=======
+credentials.ini
 *.idea
->>>>>>> 5ecab38d78b6e6f8dde5e9327abfc7853cf8663c
