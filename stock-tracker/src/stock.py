@@ -1,8 +1,9 @@
 import airflow
-import json, time, glob, requests, re
+import json, time, glob, requests, re, os
 import pandas as pd
 from datetime import datetime
 import configparser
+from pathlib import Path
 
 
 credenitials = configparser.ConfigParser()
@@ -17,7 +18,7 @@ class stock():
     'x-rapidapi-key': credenitials['DEFAULT']['key']
     }
     
-    project_path = r'/home/azureuser/projects/stock-tracker'
+    project_path = str(Path(os.path.abspath('')).parent)
     
     def __init__(self,ticker,region="US"):
         self.ticker = ticker
@@ -44,7 +45,7 @@ class stock():
         response = requests.request("GET", request_url, headers=self.headers, params=parameters)
         
         if response.status_code != 200 or response.json()['chart']['error']:
-            raise Exception('Bad Request!')
+            raise Exception('Bad Request! ' + response.json()['chart']['error']['description'])
         
         main_body = response.json()['chart']['result'][0]
         data_points = pd.DataFrame(main_body['indicators']['quote'][0])
