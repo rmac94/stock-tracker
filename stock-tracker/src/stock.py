@@ -1,13 +1,12 @@
-import airflow
 import json, time, glob, requests, re, os
 import pandas as pd
 from datetime import datetime
 import configparser
 from pathlib import Path
 
-
+cred_path = str(Path(os.path.abspath('')).parent.parent)+'/credentials.ini'
 credenitials = configparser.ConfigParser()
-credenitials.read(r'/home/azureuser/credentials/api_credentials.ini')
+credenitials.read(cred_path)
 
 
 class stock():
@@ -86,3 +85,4 @@ class stock():
             data = self.get_price_history(interval = f'{interval}', period1 = period1, period2 = period2)
             update = pd.concat([history,data])
             update.to_csv(f'{self.project_path}/data/{self.ticker}-price-history-{interval}.csv', index=False)
+            
