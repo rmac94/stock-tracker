@@ -1,3 +1,4 @@
 stock-tracker/data/**
 credentials.ini
 *.idea
+stock-tracker/src/*.ipynb
