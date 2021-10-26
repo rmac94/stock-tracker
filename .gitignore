@@ -2,3 +2,4 @@ stock-tracker/data/**
 credentials.ini
 *.idea
 stock-tracker/src/*.ipynb*
+stock-tracker/src/__pycache__/*
