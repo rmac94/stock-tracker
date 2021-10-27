@@ -13,15 +13,19 @@ def create_portfolio():
             action.save_log()
 
 
-def update_portfolio():
+def read_portfolio_data(partition):
     with open(f'{pf.project_path}/data/track-log.json', "r+") as file:
-        for x in json.load(file)['track']:
-            s.stock(ticker=x['ticker'], timestamp=x['timestamp']).get_update()
+        for x in json.load(file)[f'{partition}']:
+            yield x
+
+
+def update_portfolio_data(partition):
+    for x in read_portfolio_data(partition):
+        s.stock(ticker=x['ticker'], timestamp=x['timestamp']).get_update()
 
 
 def main():
-    create_portfolio()
-    update_portfolio()
+    update_portfolio_data('track')
 
 
 if __name__ == "__main__":
