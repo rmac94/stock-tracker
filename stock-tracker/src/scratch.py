@@ -18,4 +18,4 @@ if __name__ == "__main__":
     #         except:
     #             pass
 
-    stock.stock("gxo").get_update()
+    stock.stock("googl").get_update()
