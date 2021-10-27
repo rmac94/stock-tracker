@@ -4,7 +4,7 @@ from datetime import datetime
 import configparser
 from pathlib import Path
 
-cred_path = str(Path(os.path.abspath('')).parent.parent) + '/credentials.ini'
+cred_path = os.path.join(str(Path(os.path.abspath('')).parent.parent), 'credentials.ini')
 credentials = configparser.ConfigParser()
 credentials.read(cred_path)
 
@@ -51,6 +51,15 @@ class stock:
         return data_points[['time_stamp', 'time', 'volume', 'open', 'close', 'low', 'high']]
 
     def _initial_history(self):
+        intervals = {'5m': '1mo',
+                     '1d': '1y'}
+        try:
+            os.mkdir(os.path.join(self.project_path, 'data'))
+        except FileExistsError as ex:
+            pass
+        for interval, date_range in intervals.items():
+            init = self.get_price_history(interval=f'{interval}', data_range=f'{date_range}')
+            init.to_csv(f'{self.project_path}\\data\\{self.ticker}-price-history-{interval}.csv', index=False)
         intervals = {'5m': ['1mo', 86400 * 30],
                      '1d': ['1y', 86400 * 365]
                      }
@@ -63,7 +72,7 @@ class stock:
             init.to_csv(f'{self.project_path}/data/{self.ticker}-price-history-{interval}.csv', index=False)
 
     def _get_history(self):
-        files = glob.glob(f'{self.project_path}/data')
+        files = glob.glob(f'{self.project_path}\\data\\*')
         return [file for file in files if f'{self.ticker}' in file]
 
     def _run_history(self):
@@ -78,10 +87,13 @@ class stock:
         self._run_history()
         intervals = self._intervals()
         for interval in intervals:
-            history = pd.read_csv(f'{self.project_path}/data/{self.ticker}-price-history-{interval}.csv') \
+            file_path = f'{self.project_path}\\data\\{self.ticker}-price-history-{interval}.csv'
+            history = pd.read_csv(file_path) \
                 [['time_stamp', 'time', 'volume', 'open', 'close', 'low', 'high']]
             period1 = history.time_stamp.max()
             period2 = int(time.time())
-            data = self.get_price_history(interval=f'{interval}', period1=period1, period2=period2)
+            data = self.get_price_history(interval=f'{interval}', period1=period1, period2=period2)[1:]
+            # TODO update
             update = pd.concat([history, data])
-            update.to_csv(f'{self.project_path}/data/{self.ticker}-price-history-{interval}.csv', index=False)
+            update.to_csv(file_path, index=False)
+
