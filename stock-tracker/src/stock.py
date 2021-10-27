@@ -1,4 +1,4 @@
-import json, time, glob, requests, re, os
+import time, glob, requests, re, os
 import pandas as pd
 from datetime import datetime
 import configparser
@@ -14,31 +14,27 @@ class stock:
 
     headers = {
         'x-rapidapi-host': "apidojo-yahoo-finance-v1.p.rapidapi.com",
-        'x-rapidapi-key': credentials['DEFAULT']['key']
+        'x-rapidapi-key': credentials['API_KEY']['key']
     }
 
     project_path = str(Path(os.path.abspath('')).parent)
 
-    def __init__(self, ticker, region="US"):
+    def __init__(self, ticker, region="US", timestamp=None):
         self.ticker = ticker
         self.region = region
+        self.period2 = timestamp
 
-    def get_price_history(self, interval='10m', data_range='28d', period1=None, period2=None):
-        self.interval = interval
-        self.data_range = data_range
-        self.period1 = period1
-        self.period2 = period2
-
+    def get_price_history(self, data_range='28d', interval='10m', period1=None):
         request_url = self.url + 'stock/v2/get-chart'
 
-        parameters = {"interval": self.interval,
+        parameters = {"interval": interval,
                       "symbol": self.ticker,
                       "region": self.region}
 
-        if period1 == period2 == None:
-            parameters = {**parameters, 'range': self.data_range}
+        if (period1 == self.period2) and (self.period2 is None):
+            parameters = {**parameters, 'range': data_range}
         else:
-            parameters = {**parameters, 'period1': self.period1, 'period2': self.period2}
+            parameters = {**parameters, 'period1': period1, 'period2': self.period2}
 
         response = requests.request("GET", request_url, headers=self.headers, params=parameters)
 
@@ -64,6 +60,16 @@ class stock:
         for interval, date_range in intervals.items():
             init = self.get_price_history(interval=f'{interval}', data_range=f'{date_range}')
             init.to_csv(f'{self.project_path}\\data\\{self.ticker}-price-history-{interval}.csv', index=False)
+        intervals = {'5m': ['1mo', 86400 * 30],
+                     '1d': ['1y', 86400 * 365]
+                     }
+        for interval, date_range in intervals.items():
+            if not self.period2:
+                init = self.get_price_history(interval=f'{interval}', data_range=date_range[0])
+            else:
+                init = self.get_price_history(interval=f'{interval}', period1=(self.period2 - date_range[1]))
+
+            init.to_csv(f'{self.project_path}/data/{self.ticker}-price-history-{interval}.csv', index=False)
 
     def _get_history(self):
         files = glob.glob(f'{self.project_path}\\data\\*')
@@ -87,8 +93,7 @@ class stock:
             period1 = history.time_stamp.max()
             period2 = int(time.time())
             data = self.get_price_history(interval=f'{interval}', period1=period1, period2=period2)[1:]
-            # if interval == '1d':
-
+            # TODO update
             update = pd.concat([history, data])
             update.to_csv(file_path, index=False)
 

@@ -1,0 +1,3 @@
+pandas==1.3.4
+requests==2.26.0
+airflow==2.1.3
