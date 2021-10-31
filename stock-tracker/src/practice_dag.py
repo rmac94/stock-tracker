@@ -22,6 +22,6 @@ with DAG(
 ) as dag:
     def portfolio_update(portfolio, **kwargs):
         for ticker in portfolio:
-            stock.stock(f"{ticker"}
-            
-            
+            pass
+            #stock.stock(f"{ticker}"})
+        
