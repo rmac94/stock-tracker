@@ -3,8 +3,13 @@ import pandas as pd
 from datetime import datetime
 import configparser
 from pathlib import Path
+import socket
+
 
 cred_path = os.path.join(str(Path(os.path.abspath('')).parent.parent), 'credentials.ini')
+if socket.gethostname() == 'Test3':
+    cred_path = os.path.join(str(Path(os.path.abspath(''))), 'credentials.ini')
+
 credentials = configparser.ConfigParser()
 credentials.read(cred_path)
 
