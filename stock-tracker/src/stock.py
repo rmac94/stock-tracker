@@ -108,4 +108,4 @@ class stock:
                 return
             update = pd.concat([history, data])
             update.to_csv(file_path, index=False)
-            print(f'{self.ticker} updated!')
+            print(f'{self.ticker} {interval} updated!')
