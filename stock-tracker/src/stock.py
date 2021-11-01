@@ -37,6 +37,8 @@ class stock:
     }
 
     project_path = str(Path(os.path.abspath('')).parent)
+    if socket.gethostname() == 'Test3':
+        project_path = str(os.path.join(Path(os.path.abspath('')),'stock-tracker'))
 
     def __init__(self, ticker, region="US", timestamp=None):
         self.ticker = ticker
@@ -79,10 +81,10 @@ class stock:
                                               period1=(self.timestamp - date_range[1]),
                                               period2=self.timestamp)
 
-            init.to_csv(f'{self.project_path}/data/{self.ticker}-price-history-{interval}.csv', index=False)
+            init.to_csv(os.path.join(f'{self.project_path}','data',f'{self.ticker}-price-history-{interval}.csv'), index=False)
 
     def _get_history(self):
-        files = glob.glob(f'{self.project_path}\\data\\*')
+        files = glob.glob(os.path.join(f'{self.project_path}','data','*'))
         return [file for file in files if f'{self.ticker}' in file]
 
     def _run_history(self):
@@ -97,7 +99,7 @@ class stock:
         self._run_history()
         intervals = self._intervals()
         for interval in intervals:
-            file_path = f'{self.project_path}\\data\\{self.ticker}-price-history-{interval}.csv'
+            file_path = os.path.join(f'{self.project_path}','data',f'{self.ticker}-price-history-{interval}.csv')
             history = pd.read_csv(file_path) \
                 [['time_stamp', 'time', 'volume', 'open', 'close', 'low', 'high']]
             period1, period2 = history.time_stamp.max() + 1, int(time.time())
@@ -106,3 +108,4 @@ class stock:
                 return
             update = pd.concat([history, data])
             update.to_csv(file_path, index=False)
+            print(f'{self.ticker} updated!')
