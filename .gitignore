@@ -1,5 +1,5 @@
-stock-tracker/data/**
+stocktracker/data/**
 credentials.ini
 *.idea
-stock-tracker/src/*.ipynb*
-stock-tracker/src/__pycache__/*
+stocktracker/src/*.ipynb*
+stocktracker/src/__pycache__/*
