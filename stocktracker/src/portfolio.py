@@ -1,10 +1,7 @@
 from dataclasses import dataclass
-from pathlib import Path
-import json, os, time, socket, pathlib, socket 
+import json, os, time, socket, misc
 
-project_path = str(pathlib.Path(os.path.abspath('')).parent)
-if socket.gethostname() == 'Test3':
-    project_path = str(os.path.join(Path(os.path.abspath('')),'stock-tracker'))
+project_path = misc.project_path()
 
 @dataclass
 class track:

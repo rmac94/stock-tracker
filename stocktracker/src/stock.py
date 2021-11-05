@@ -3,15 +3,10 @@ import pandas as pd
 from datetime import datetime
 import configparser
 from pathlib import Path
-import socket
+import socket, misc
 
 
-cred_path = os.path.join(str(Path(os.path.abspath('')).parent.parent), 'credentials.ini')
-if socket.gethostname() == 'Test3':
-    cred_path = os.path.join(str(Path(os.path.abspath(''))), 'credentials.ini')
-
-credentials = configparser.ConfigParser()
-credentials.read(cred_path)
+credentials = misc.read_credentials()
 
 
 def response_to_df(response) -> pd.DataFrame:
@@ -36,9 +31,7 @@ class stock:
         'x-rapidapi-key': credentials['API_KEY']['key']
     }
 
-    project_path = str(Path(os.path.abspath('')).parent)
-    if socket.gethostname() == 'Test3':
-        project_path = str(os.path.join(Path(os.path.abspath('')),'stock-tracker'))
+    project_path = misc.project_path()
 
     def __init__(self, ticker, region="US", timestamp=None):
         self.ticker = ticker
