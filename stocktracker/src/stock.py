@@ -62,7 +62,7 @@ class stock:
                      '1d': ['1y', 86400 * 365]
                      }
         try:
-            os.mkdir(os.path.join(self.project_path, 'data'))
+            os.mkdir(os.path.join(os.path.expanduser('~'), 'stock-data'))
         except FileExistsError:
             pass
 
@@ -74,10 +74,10 @@ class stock:
                                               period1=(self.timestamp - date_range[1]),
                                               period2=self.timestamp)
 
-            init.to_csv(os.path.join(f'{self.project_path}','data',f'{self.ticker}-price-history-{interval}.csv'), index=False)
+            init.to_csv(os.path.join(os.path.expanduser('~'),'stock-data',f'{self.ticker}-price-history-{interval}.csv'), index=False)
 
     def _get_history(self):
-        files = glob.glob(os.path.join(f'{self.project_path}','data','*'))
+        files = glob.glob(os.path.join(os.path.expanduser('~'), 'stock-data','*'))
         return [file for file in files if f'{self.ticker}' in file]
 
     def _run_history(self):
@@ -92,7 +92,7 @@ class stock:
         self._run_history()
         intervals = self._intervals()
         for interval in intervals:
-            file_path = os.path.join(f'{self.project_path}','data',f'{self.ticker}-price-history-{interval}.csv')
+            file_path = os.path.join(os.path.expanduser('~'),'stock-data',f'{self.ticker}-price-history-{interval}.csv')
             history = pd.read_csv(file_path) \
                 [['time_stamp', 'time', 'volume', 'open', 'close', 'low', 'high']]
             period1, period2 = history.time_stamp.max() + 1, int(time.time())

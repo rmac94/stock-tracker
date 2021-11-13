@@ -12,7 +12,7 @@ class track:
     def _create_activity_log(self):
         cls_type = self.__class__.__name__
         try:
-            os.mkdir(f'{project_path}\\data')
+            os.mkdir(os.path.join(os.path.expanduser('~'), 'stock-data'))
             with open(f'{project_path}\\data\\{cls_type}-log.json', 'x') as f:
                 header = f'{{"{cls_type}":[]}}'
                 f.write(header)
@@ -27,7 +27,7 @@ class track:
         cls_type = self.__class__.__name__
         self._create_activity_log()
         activity = self._log_activity()
-        with open(f'{project_path}/data/{cls_type}-log.json',"r+") as file:
+        with open(os.path.join(os.path.expanduser('~'), 'stock-data', f'{cls_type}-log.json'),"r+") as file:
             data = json.load(file)
             data[f'{cls_type}'].append(activity)
             file.seek(0)
