@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-setup(name='stock-tracker',
+setup(name='stocktracker',
       version='1.0.4',
       description='Package to extract stock information',
       author='Ronan Machin',
